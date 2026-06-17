@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九州五日 ｜ 領隊管制手冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10151F;
+    --panel:#19202E;
+    --panel-2:#1F2839;
+    --line:#2C3850;
+    --line-soft:#243047;
+    --txt:#E6EAF2;
+    --txt-soft:#9AA6BD;
+    --txt-dim:#6C7990;
+    --shu:#E06A4E;
+    --gold:#E0B05A;
+    --d1:#E06A4E;
+    --d2:#E0A04A;
+    --d3:#46B69A;
+    --d4:#4E9CE0;
+    --d5:#A9C36A;
+    --alert:#E0B05A;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans TC",system-ui,sans-serif;
+    background:var(--bg);color:var(--txt);line-height:1.6;font-size:15px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--d4)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 16px 100px}
+
+  /* ---------- masthead ---------- */
+  .mast{padding:30px 4px 22px;border-bottom:2px solid var(--line)}
+  .mast .kick{font-family:var(--mono);font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+  .mast h1{
+    font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,5vw,34px);
+    margin-top:6px;letter-spacing:.02em;
+  }
+  .mast h1 b{color:var(--shu)}
+  .mast .line2{margin-top:8px;color:var(--txt-soft);font-size:13.5px;font-family:var(--mono);letter-spacing:.04em}
+
+  /* ---------- control panel ---------- */
+  .panel-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:22px 0;
+  }
+  .pcard{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 15px;
+    border-top:3px solid var(--accent,var(--gold));
+  }
+  .pcard h3{font-size:11px;letter-spacing:.16em;color:var(--txt-dim);font-weight:700;text-transform:uppercase;margin-bottom:9px}
+  .pcard .row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line-soft);font-size:13.5px}
+  .pcard .row:last-child{border-bottom:0}
+  .pcard .row span{color:var(--txt-soft)}
+  .pcard .row b{font-family:var(--mono);font-weight:500;color:var(--txt);text-align:right}
+  .pcard .big{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--txt)}
+  .pcard .big.alert{color:var(--alert)}
+
+  .section-label{
+    font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--txt-dim);
+    text-transform:uppercase;margin:38px 0 14px;display:flex;align-items:center;gap:12px;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ---------- emergency strip ---------- */
+  .emerg{
+    background:linear-gradient(180deg,#241A14,#1B1C24);border:1px solid #4A3A2A;border-radius:12px;
+    padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px 22px;
+  }
+  .emerg .e{font-size:13px}
+  .emerg .e i{display:block;font-style:normal;color:var(--gold);font-size:11px;letter-spacing:.12em;margin-bottom:2px}
+  .emerg .e b{font-family:var(--mono);font-weight:500;font-size:14.5px;color:var(--txt)}
+
+  /* ---------- day nav ---------- */
+  .daynav{
+    position:sticky;top:0;z-index:30;display:flex;gap:8px;overflow-x:auto;
+    margin:26px -16px 0;padding:11px 16px;background:rgba(16,21,31,.94);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);scrollbar-width:none;
+  }
+  .daynav::-webkit-scrollbar{display:none}
+  .daynav a{
+    flex:0 0 auto;text-decoration:none;color:var(--txt-soft);font-size:13px;font-weight:500;
+    border:1px solid var(--line);border-radius:8px;padding:6px 13px;white-space:nowrap;transition:.16s;
+    font-family:var(--mono);
+  }
+  .daynav a.on{color:#0E1119;border-color:transparent;font-weight:700}
+  .daynav a[data-d="1"].on{background:var(--d1)}
+  .daynav a[data-d="2"].on{background:var(--d2)}
+  .daynav a[data-d="3"].on{background:var(--d3)}
+  .daynav a[data-d="4"].on{background:var(--d4)}
+  .daynav a[data-d="5"].on{background:var(--d5)}
+
+  /* ---------- day ---------- */
+  .day{padding-top:30px;scroll-margin-top:60px}
+  .day-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .seal{
+    flex:0 0 auto;width:52px;height:52px;border-radius:10px;display:grid;place-items:center;
+    color:#0E1119;font-family:"Noto Serif TC",serif;font-weight:700;background:var(--day);
+  }
+  .seal small{font-size:9px;letter-spacing:.1em;opacity:.8;line-height:1}
+  .seal b{font-size:22px;line-height:1}
+  .day-head .dt{font-family:var(--mono);font-size:12px;color:var(--txt-dim);letter-spacing:.08em}
+  .day-head h2{font-family:"Noto Serif TC",serif;font-size:clamp(19px,4.4vw,24px);font-weight:700;margin-top:1px}
+  .day-head .seg{font-size:12.5px;color:var(--txt-soft);margin-top:2px}
+
+  /* schedule table */
+  .sched{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .srow{display:grid;grid-template-columns:74px 1fr;border-bottom:1px solid var(--line-soft)}
+  .srow:last-child{border-bottom:0}
+  .stime{
+    font-family:var(--mono);font-size:12.5px;color:var(--txt-soft);padding:13px 10px 13px 14px;
+    border-right:2px solid var(--day);background:var(--panel-2);
+  }
+  .scell{padding:12px 15px}
+  .scell .act{font-weight:700;font-size:15px;color:var(--txt)}
+  .scell .det{font-size:13px;color:var(--txt-soft);margin-top:3px}
+  .scell .det .lab{color:var(--gold);font-weight:500}
+  .mono{font-family:var(--mono);font-size:12.5px}
+  .tag{
+    display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:1px 7px;
+    border-radius:5px;margin-left:7px;vertical-align:1px;
+  }
+  .t-book{background:#3A2723;color:#F0A491}
+  .t-meal{background:#3A2F1C;color:#E8C57E}
+  .t-park{background:#1E3142;color:#8FC2E8}
+  .t-warn{background:#3E2020;color:#F09A9A}
+
+  .links{margin-top:8px;display:flex;flex-wrap:wrap;gap:7px}
+  .lk{
+    font-family:var(--mono);font-size:11.5px;text-decoration:none;color:var(--txt-soft);
+    border:1px solid var(--line);border-radius:6px;padding:3px 9px;transition:.15s;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .lk:hover{border-color:var(--day);color:var(--txt)}
+  .lk svg{width:12px;height:12px;opacity:.8}
+
+  /* stay row inside day */
+  .stayrow{
+    margin-top:10px;background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--day);
+    border-radius:10px;padding:11px 14px;display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center;
+  }
+  .stayrow .sl{font-size:11px;letter-spacing:.14em;color:var(--txt-dim)}
+  .stayrow .sn{font-family:"Noto Serif TC",serif;font-weight:700;font-size:16px}
+  .stayrow .si{font-family:var(--mono);font-size:11.5px;color:var(--txt-soft)}
+
+  /* details blocks */
+  details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden}
+  summary{
+    cursor:pointer;padding:14px 16px;font-weight:700;font-size:14.5px;list-style:none;
+    display:flex;align-items:center;gap:10px;user-select:none;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary .chev{margin-left:auto;color:var(--txt-dim);transition:.2s;font-family:var(--mono)}
+  details[open] summary .chev{transform:rotate(90deg)}
+  summary .pin{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--accent2,var(--gold));border:1px solid currentColor;border-radius:5px;padding:1px 7px}
+  .dbody{padding:0 16px 16px;border-top:1px solid var(--line-soft)}
+  .kv{display:grid;grid-template-columns:130px 1fr;gap:2px 14px;font-size:13px;padding-top:12px}
+  .kv dt{color:var(--txt-dim)}
+  .kv dd{color:var(--txt);font-family:var(--mono);font-size:12.5px;word-break:break-word}
+  .kv dd.hl{color:var(--gold);font-weight:700;font-size:13.5px}
+
+  .note{font-size:12px;color:var(--txt-dim);margin-top:10px;line-height:1.7}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);text-align:center;color:var(--txt-dim);font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+
+  @media (max-width:560px){
+    .srow{grid-template-columns:62px 1fr}
+    .stime{padding:11px 7px 11px 10px;font-size:11.5px}
+    .kv{grid-template-columns:1fr}
+    .kv dt{margin-top:7px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="kick">Tour Leader · Operations Manual</div>
+    <h1>九州五日自駕 ｜ <b>領隊管制手冊</b></h1>
+    <div class="line2">2026/06/19 – 06/23　·　PAX 4　·　SELF-DRIVE SUV</div>
+  </header>
+
+  <!-- ===== CONTROL PANEL ===== -->
+  <div class="section-label">關鍵時間管制 · Key Deadlines</div>
+  <div class="panel-grid">
+    <div class="pcard" style="--accent:var(--d1)">
+      <h3>租車 RENTAL CAR</h3>
+      <div class="row"><span>取車</span><b>06/19 12:00</b></div>
+      <div class="row"><span>還車</span><b class="">06/23 16:00</b></div>
+      <div class="row"><span>地點</span><b>福岡機場國際線店</b></div>
+      <div class="row"><span>預約號</span><b>99969343400</b></div>
+    </div>
+    <div class="pcard" style="--accent:var(--d3)">
+      <h3>柳川遊船 BOAT</h3>
+      <div class="big alert">06/19 14:00</div>
+      <div class="row"><span>集合</span><b>龜之井飯店柳川 大廳</b></div>
+      <div class="row"><span>提前</span><b>前 5 分鐘</b></div>
+      <div class="row"><span>人數 / 金額</span><b>4 人 / ¥8,000</b></div>
+    </div>
+    <div class="pcard" style="--accent:var(--gold)">
+      <h3>住宿 LODGING</h3>
+      <div class="row"><span>06/19</span><b>OMO5 熊本</b></div>
+      <div class="row"><span>06/20</span><b>高千穗 SOLEST</b></div>
+      <div class="row"><span>06/21</span><b>界 別府</b></div>
+      <div class="row"><span>06/22</span><b>界 由布院</b></div>
+    </div>
+    <div class="pcard" style="--accent:var(--d4)">
+      <h3>抵達航班 ARRIVAL 06/19</h3>
+      <div class="row"><span>王（Andrew）</span><b>CI110 0650–0955</b></div>
+      <div class="row"><span>雷（leijikun）</span><b>9C 0800–1055</b></div>
+      <div class="row"><span>取車抵達便</span><b>9C 6609</b></div>
+      <div class="row"><span>返程</span><b>未填 ／ 待補</b></div>
+    </div>
+  </div>
+
+  <div class="section-label">緊急聯絡 · Contacts</div>
+  <div class="emerg">
+    <div class="e"><i>租車店 福岡機場國際線</i><b>092-778-0100</b></div>
+    <div class="e"><i>租車預約名義 / Mail</i><b>chungyen wang<br>toomanpypeople@gmail.com</b></div>
+    <div class="e"><i>遊船預約名義 / Tel</i><b>Andrew Wang<br>886-988-211-320</b></div>
+    <div class="e"><i>遊船 Mail</i><b>unbelievable.many.times@gmail.com</b></div>
+  </div>
+
+  <!-- ===== DAY NAV ===== -->
+  <nav class="daynav" id="daynav">
+    <a href="#d1" data-d="1" class="on">D1 · 06/19 熊本</a>
+    <a href="#d2" data-d="2">D2 · 06/20 阿蘇</a>
+    <a href="#d3" data-d="3">D3 · 06/21 高千穗</a>
+    <a href="#d4" data-d="4">D4 · 06/22 別府</a>
+    <a href="#d5" data-d="5">D5 · 06/23 由布院</a>
+  </nav>
+
+  <!-- ============ DAY 1 ============ -->
+  <section class="day" id="d1" style="--day:var(--d1)">
+    <div class="day-head">
+      <div class="seal"><small>第</small><b>一</b></div>
+      <div>
+        <div class="dt">2026 / 06 / 19　FRI</div>
+        <h2>抵達・柳川遊船・熊本城</h2>
+        <div class="seg">福岡機場 → 柳川 → 熊本</div>
+      </div>
+    </div>
+
+    <div class="sched">
+      <div class="srow"><div class="stime">07:00<br>–11:00</div><div class="scell">
+        <div class="act">航班抵達 · 集合</div>
+        <div class="det"><span class="lab">王</span> CI110 06:50–09:55　／　<span class="lab">雷</span> 9C 08:00–10:55（取車登記抵達便 <span class="mono">9C 6609</span>）</div>
+      </div></div>
+      <div class="srow"><div class="stime">12:00</div><div class="scell">
+        <div class="act">福岡機場取車 <span class="tag t-book">合約</span></div>
+        <div class="det">SUV1 等級 · AT · 出發店舖：福岡機場國際線店。詳細合約見下方租車區塊。</div>
+      </div></div>
+      <div class="srow"><div class="stime">13:00</div><div class="scell">
+        <div class="act">午餐 <span class="tag t-meal">用餐</span></div>
+        <div class="det">選項：海鮮丼飯 ／ 什錦麵</div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/N1igV55TpJ7HScei7" target="_blank" rel="noopener">海鮮丼</a>
+          <a class="lk" href="https://maps.app.goo.gl/bpSaWLSgGin4KUjx7" target="_blank" rel="noopener">什錦麵</a>
+        </div>
+      </div></div>
+      <div class="srow"><div class="stime">14:00</div><div class="scell">
+        <div class="act">柳川遊船 <span class="tag t-book">已預約</span></div>
+        <div class="det"><span class="lab">集合</span>龜之井飯店柳川 大廳，<b>請於 14:00 前 5 分鐘抵達</b>。Standard plan · 4 人 · ¥8,000（含稅）。完整預約見下方遊船區塊。</div>
+      </div></div>
+      <div class="srow"><div class="stime">15:00</div><div class="scell">
+        <div class="act">前往熊本市區 · 停車 <span class="tag t-park">停車場</span></div>
+        <div class="det">熊本城／下通一帶停車場備選：</div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/6ZnFpai42UPtTxay9" target="_blank" rel="noopener">Times24 銀座 Press</a>
+          <a class="lk" href="https://maps.app.goo.gl/3xQtLF3HrFLN6kBDA" target="_blank" rel="noopener">NPC24H 熊本縣營</a>
+          <a class="lk" href="https://maps.app.goo.gl/rqLfXJ8XgSXvBFFu7" target="_blank" rel="noopener">辛島停車場</a>
+        </div>
+      </div></div>
+      <div class="srow"><div class="stime">16:00<br>–18:00</div><div class="scell">
+        <div class="act">熊本城・櫻之馬場</div>
+        <div class="det">城彩苑城下町可逛街用點心。</div>
+      </div></div>
+      <div class="srow"><div class="stime">18:00</div><div class="scell">
+        <div class="act">下通商店街 · COCOSA B1</div>
+        <div class="det">採買晚餐（飯店內用）。</div>
+      </div></div>
+      <div class="srow"><div class="stime">19:00<br>–21:00</div><div class="scell">
+        <div class="act">飯店晚餐 · 夜景 · Jazz</div>
+        <div class="det">回飯店用餐、看夜景、聽現場爵士。</div>
+      </div></div>
+    </div>
+
+    <div class="stayrow">
+      <div><div class="sl">住宿</div><div class="sn">OMO5 熊本（星野集團）</div></div>
+      <div class="si">Check-in 06/19　·　reservationId <b>11ex4n8gsb</b></div>
+      <a class="lk" href="https://hoshinoresorts.com/qr/#/EN/hotels/0000000314?reservationId=11ex4n8gsb&checkInDate=20260619" target="_blank" rel="noopener" style="margin-left:auto">訂房連結</a>
+    </div>
+
+    <details>
+      <summary>租車合約完整資訊 <span class="pin" style="--accent2:var(--d1)">RENTAL</span><span class="chev">›</span></summary>
+      <div class="dbody">
+        <dl class="kv">
+          <dt>預約號碼</dt><dd class="hl">99969343400</dd>
+          <dt>姓名</dt><dd>chungyen wang</dd>
+          <dt>Email</dt><dd>toomanpypeople@gmail.com</dd>
+          <dt>出發店舖</dt><dd>福岡機場國際線店（TEL 092-778-0100）</dd>
+          <dt>店舖地址</dt><dd>福岡市博多区東那珂二丁目22番3号<br>2-22-3 Higashinaka, Hakata-ku, Fukuoka-shi 812-0892</dd>
+          <dt>還車店舖</dt><dd>同上（福岡機場國際線店）</dd>
+          <dt>取車日時</dt><dd class="hl">06/19/2026 12:00</dd>
+          <dt>抵達便</dt><dd>9C 6609</dd>
+          <dt>還車日時</dt><dd class="hl">06/23/2026 16:00</dd>
+          <dt>出發便（返程）</dt><dd>未填</dd>
+          <dt>車型等級</dt><dd>SUV1 等級　·　台數 1</dd>
+          <dt>規格</dt><dd>禁煙 · 4WD 不需 · AT · 雪胎不需</dd>
+          <dt>免責補償</dt><dd>加入（NOC 安心 W 方案 · ETC 卡）</dd>
+          <dt>兒童座椅</dt><dd>嬰兒 0 · 兒童 0 · 成長型 0</dd>
+          <dt>付款方式</dt><dd>WEB 結算（信用卡一次付清）</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details>
+      <summary>柳川遊船預約完整資訊 <span class="pin" style="--accent2:var(--d3)">BOAT</span><span class="chev">›</span></summary>
+      <div class="dbody">
+        <dl class="kv">
+          <dt>集合地點</dt><dd>龜之井飯店柳川 大廳（請於預約時間前 5 分鐘集合）</dd>
+          <dt>日期 / 時間</dt><dd class="hl">2026/06/19（五）14:00</dd>
+          <dt>方案</dt><dd>Standard plan</dd>
+          <dt>人數</dt><dd>4 人</dd>
+          <dt>費用</dt><dd class="hl">¥8,000（含稅）</dd>
+          <dt>預約名義</dt><dd>Andrew Wang</dd>
+          <dt>電話</dt><dd>886-988-211-320</dd>
+          <dt>Email</dt><dd>unbelievable.many.times@gmail.com</dd>
+          <dt>出生地</dt><dd>Taiwan</dd>
+        </dl>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DAY 2 ============ -->
+  <section class="day" id="d2" style="--day:var(--d2)">
+    <div class="day-head">
+      <div class="seal"><small>第</small><b>二</b></div>
+      <div>
+        <div class="dt">2026 / 06 / 20　SAT</div>
+        <h2>阿蘇火山・草千里・高千穗</h2>
+        <div class="seg">熊本 → 阿蘇 → 高千穗</div>
+      </div>
+    </div>
+
+    <div class="sched">
+      <div class="srow"><div class="stime">09:00</div><div class="scell"><div class="act">熊本出發</div></div></div>
+      <div class="srow"><div class="stime">10:00</div><div class="scell">
+        <div class="act">草千里之濱 <span class="tag t-park">停車場</span></div>
+        <div class="det">新草千里餐廳同區。</div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/PgQqZE8X52gn4c4S9" target="_blank" rel="noopener">草千里ヶ浜駐車場</a>
+          <a class="lk" href="https://maps.app.goo.gl/bCBwQu4qVBNYBoNE8" target="_blank" rel="noopener">備選地圖</a>
+        </div>
+      </div></div>
+      <div class="srow"><div class="stime">12:00</div><div class="scell">
+        <div class="act">午餐 · 新草千里餐廳 <span class="tag t-meal">用餐</span></div>
+      </div></div>
+      <div class="srow"><div class="stime">13:00</div><div class="scell">
+        <div class="act">阿蘇山上廣場・火山口・砂千里 <span class="tag t-park">停車場</span></div>
+        <div class="det">阿蘇火山口第一停車場。</div>
+        <div class="links"><a class="lk" href="https://share.google/4wAzJ3my5wJZcNDyU" target="_blank" rel="noopener">第一停車場地圖</a></div>
+      </div></div>
+      <div class="srow"><div class="stime">14:00</div><div class="scell">
+        <div class="act">大観峰 <span class="tag t-warn">注意</span></div>
+        <div class="det"><span class="lab">⚠</span> 中岳火山口觀景台<b>不開放</b>。大観峰 第 1／2／3 駐車場可停。</div>
+      </div></div>
+      <div class="srow"><div class="stime">15:00</div><div class="scell"><div class="act">車程前往高千穗方向</div></div></div>
+      <div class="srow"><div class="stime">16:00</div><div class="scell">
+        <div class="act">上色見熊野神社</div>
+        <div class="det">苔蘚參道，步行需時，注意鞋與時間。</div>
+      </div></div>
+      <div class="srow"><div class="stime">17:00</div><div class="scell"><div class="act">交通 · 前往高千穗市區</div></div></div>
+      <div class="srow"><div class="stime">18:00</div><div class="scell">
+        <div class="act">晚餐 <span class="tag t-meal">用餐</span></div>
+        <div class="links"><a class="lk" href="https://share.google/HDPZScf8RkdjLjyXC" target="_blank" rel="noopener">晚餐地圖</a></div>
+      </div></div>
+    </div>
+
+    <div class="stayrow">
+      <div><div class="sl">住宿</div><div class="sn">高千穗 SOLEST</div></div>
+      <div class="si">Check-in 06/20</div>
+    </div>
+  </section>
+
+  <!-- ============ DAY 3 ============ -->
+  <section class="day" id="d3" style="--day:var(--d3)">
+    <div class="day-head">
+      <div class="seal"><small>第</small><b>三</b></div>
+      <div>
+        <div class="dt">2026 / 06 / 21　SUN</div>
+        <h2>高千穗神話・九重・別府</h2>
+        <div class="seg">高千穗 → 九重 → 別府</div>
+      </div>
+    </div>
+
+    <div class="sched">
+      <div class="srow"><div class="stime">08:00</div><div class="scell"><div class="act">早起 · 飯店早餐</div></div></div>
+      <div class="srow"><div class="stime">09:00</div><div class="scell">
+        <div class="act">高千穗峽賞景 <span class="tag t-park">停車場</span></div>
+        <div class="det"><span class="lab">優先停</span>御塩井駐車場（早到搶位）。停車預約代碼：<span class="mono">HC5V55IU</span> leijikun ／ <span class="mono">DT54CXQM</span> chungyenwang</div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/hkXwZmWtBaiDT9yp9" target="_blank" rel="noopener">御塩井駐車場</a>
+          <a class="lk" href="https://maps.app.goo.gl/bfRvGgF3LDSQoPcs6" target="_blank" rel="noopener">備選 1st</a>
+          <a class="lk" href="https://maps.app.goo.gl/bfRvGgF3LDSQoPcs6" target="_blank" rel="noopener">備選 2nd</a>
+        </div>
+      </div></div>
+      <div class="srow"><div class="stime">10:00</div><div class="scell"><div class="act">高千穗神社</div></div></div>
+      <div class="srow"><div class="stime">11:00</div><div class="scell">
+        <div class="act">元祖流水麵 <span class="tag t-meal">午餐</span></div>
+        <div class="links"><a class="lk" href="https://share.google/Y3sA3nPsu1awFxQ2e" target="_blank" rel="noopener">地圖</a></div>
+      </div></div>
+      <div class="srow"><div class="stime">12:00</div><div class="scell">
+        <div class="act">天岩戸神社・天安河原</div>
+        <div class="links"><a class="lk" href="https://share.google/0amvB0Fi2f8DPorpd" target="_blank" rel="noopener">地圖</a></div>
+      </div></div>
+      <div class="srow"><div class="stime">13:00</div><div class="scell"><div class="act">車程前往九重</div></div></div>
+      <div class="srow"><div class="stime">14:00</div><div class="scell"><div class="act">久住花公園</div></div></div>
+      <div class="srow"><div class="stime">15:00</div><div class="scell">
+        <div class="act">九重夢大吊橋・蓼原濕原 <span class="tag t-park">停車場</span></div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/d9TctLXA8Ae8XtYh7" target="_blank" rel="noopener">地圖 1</a>
+          <a class="lk" href="https://maps.app.goo.gl/R1hUbLHUP5KMCKVw7" target="_blank" rel="noopener">地圖 2</a>
+        </div>
+      </div></div>
+      <div class="srow"><div class="stime">16:00</div><div class="scell"><div class="act">車程前往別府</div></div></div>
+      <div class="srow"><div class="stime">17:00</div><div class="scell">
+        <div class="act">抵達別府飯店 · 北濱公園</div>
+        <div class="det">入住休息，周邊可逛街。</div>
+        <div class="links">
+          <a class="lk" href="https://maps.app.goo.gl/adK2e6q9NBTa9Him6" target="_blank" rel="noopener">北濱公園</a>
+          <a class="lk" href="https://maps.app.goo.gl/rxmoiUTZ7ij93Nc59" target="_blank" rel="noopener">周邊地圖</a>
+          <a class="lk" href="https://maps.app.goo.gl/w3kFSgcyxYKKo6Qq5" target="_blank" rel="noopener">逛街點</a>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="stayrow">
+      <div><div class="sl">住宿</div><div class="sn">界 別府（星野集團）</div></div>
+      <div class="si">Check-in 06/21</div>
+    </div>
+  </section>
+
+  <!-- ============ DAY 4 ============ -->
+  <section class="day" id="d4" style="--day:var(--d4)">
+    <div class="day-head">
+      <div class="seal"><small>第</small><b>四</b></div>
+      <div>
+        <div class="dt">2026 / 06 / 22　MON</div>
+        <h2>別府地獄巡禮</h2>
+        <div class="seg">別府市內 → 由布院（宿）</div>
+      </div>
+    </div>
+
+    <div class="sched">
+      <div class="srow"><div class="stime">10:00</div><div class="scell">
+        <div class="act">退房離開</div>
+        <div class="det">退掉 06/21 別府市區飯店，行李上車。</div>
+      </div></div>
+      <div class="srow"><div class="stime">11:00</div><div class="scell">
+        <div class="act">前往纜車 · 別府地獄 <span class="tag t-park">停車</span></div>
+        <div class="det"><span class="lab">海地獄</span>自駕路線：從東九州高速公路（別府 IC）右轉，沿縣道 11 號往鐵輪溫泉方向直行約 3 公里，車程約 5 分鐘。</div>
+        <div class="links"><a class="lk" href="https://maps.app.goo.gl/BXrt64t68js6F4qN6" target="_blank" rel="noopener">海地獄</a></div>
+      </div></div>
+      <div class="srow"><div class="stime">12:00<br>–15:00</div><div class="scell">
+        <div class="act">別府地獄巡禮</div>
+        <div class="det">整個下午走訪各地獄群（海地獄、血池地獄等）。</div>
+      </div></div>
+      <div class="srow"><div class="stime">15:00</div><div class="scell">
+        <div class="act">前往由布院 · 入住 界 由布院 <span class="tag t-book">已預約</span></div>
+        <div class="det">地獄巡禮後驅車前往由布院（約 20–30 分鐘），入住溫泉旅館，享受溫泉與會席晚餐。</div>
+      </div></div>
+    </div>
+
+    <div class="stayrow">
+      <div><div class="sl">住宿</div><div class="sn">界 由布院（星野集團）</div></div>
+      <div class="si">Check-in 06/22</div>
+    </div>
+  </section>
+
+  <!-- ============ DAY 5 ============ -->
+  <section class="day" id="d5" style="--day:var(--d5)">
+    <div class="day-head">
+      <div class="seal"><small>第</small><b>五</b></div>
+      <div>
+        <div class="dt">2026 / 06 / 23　TUE</div>
+        <h2>由布院・金鱗湖・回程</h2>
+        <div class="seg">由布院 → 福岡機場</div>
+      </div>
+    </div>
+
+    <div class="sched">
+      <div class="srow"><div class="stime">上午</div><div class="scell">
+        <div class="act">界 由布院 退房</div>
+        <div class="det">已在由布院，退房後直接開始由布院散策。</div>
+      </div></div>
+      <div class="srow"><div class="stime">11:00</div><div class="scell">
+        <div class="act">金鱗湖 <span class="tag t-meal">午餐</span></div>
+        <div class="det">釜飯午餐：由布まぶし「心」（有二間分店）。</div>
+      </div></div>
+      <div class="srow"><div class="stime">13:00</div><div class="scell">
+        <div class="act">湯之坪街道 · 湯布院花卉村 · 昭和館 <span class="tag t-meal">甜點</span></div>
+        <div class="det">必吃：B-speak 蛋糕捲 ／ Telato 義式冰淇淋。</div>
+      </div></div>
+      <div class="srow"><div class="stime">14:00</div><div class="scell">
+        <div class="act">史努比茶屋 · 橡子共和國 <span class="tag t-meal">甜點</span></div>
+        <div class="det">順手嚐：milch 半熟起司布丁 ／ 金賞可樂餅。</div>
+      </div></div>
+      <div class="srow"><div class="stime">15:00</div><div class="scell">
+        <div class="act">出發前往福岡</div>
+        <div class="det"><b>車程約 1.5 小時</b>，務必抓緊時間，預留還車與報到緩衝。</div>
+      </div></div>
+      <div class="srow"><div class="stime">16:00</div><div class="scell">
+        <div class="act">福岡機場還車 <span class="tag t-book">deadline</span></div>
+        <div class="det">福岡機場國際線店還車（預約還車時間 16:00），之後辦理登機。</div>
+      </div></div>
+    </div>
+
+    <div class="note">※ 返程航班試算表未填寫，請依實際機票時間調整由布院停留與出發時刻。</div>
+  </section>
+
+  <p class="foot">九州 · KYUSHU 2026 ｜ 領隊管制手冊　·　資料整理自行程試算表</p>
+
+</div>
+
+<script>
+  const links = [...document.querySelectorAll('.daynav a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = '#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('on', a.getAttribute('href')===id));
+        const active = links.find(a=>a.getAttribute('href')===id);
+        if(active){ active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}); }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  sections.forEach(s=>s && spy.observe(s));
+</script>
+</body>
+</html>
